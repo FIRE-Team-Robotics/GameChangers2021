@@ -10,6 +10,8 @@ import com.qualcomm.robotcore.hardware.SwitchableLight;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.java.movement.AutoDriving;
+import org.firstinspires.ftc.teamcode.java.util.PositionControl.PositionPidfConstants;
+import org.firstinspires.ftc.teamcode.java.util.PositionControl.PositionPidfController;
 import org.firstinspires.ftc.teamcode.java.util.RobotHardware;
 
 //import org.firstinspires.ftc.teamcode.java.util.RobotHardware;
@@ -30,9 +32,9 @@ public class ComplexRemoteAuton extends LinearOpMode {
 	private DcMotor intakeAndDelivery;
 	private BNO055IMU imu;
 	private AutoDriving autoDriving;
-	private PidfController PIDFDrive;
-	private PidfController PIDFStrafe;
-	private PidfController PIDFTurn;
+	private PositionPidfController PIDFDrive;
+	private PositionPidfController PIDFStrafe;
+	private PositionPidfController PIDFTurn;
 	public RevColorSensorV3 colorSensor;
 	private Servo lowerWobble;
 	int movement = 0;
@@ -54,7 +56,7 @@ public class ComplexRemoteAuton extends LinearOpMode {
 		backLeftMotor = robot.backLeftMotor;
 		intakeAndDelivery = robot.intakeAndDelivery;
 		colorSensor = hardwareMap.get(RevColorSensorV3.class,"colorSensor");
-		lowerWobble = robot.lowerWobble;
+		//lowerWobble = robot.lowerWobble;
 		boolean end = false;
 		if (colorSensor instanceof SwitchableLight) {
 			((SwitchableLight)colorSensor).enableLight(true);
@@ -68,7 +70,7 @@ public class ComplexRemoteAuton extends LinearOpMode {
 //            PIDFStrafe = new PIDFController(0.001705, 0.000000, 0.005705, 0);
 //            PIDFTurn = new PIDFController(0.35, 0.00000, 0.395, 0);
 
-            autoDriving = new AutoDriving(PidfConstants.USDrive, PidfConstants.USStrafe, PidfConstants.USTurn, robot);
+            autoDriving = new AutoDriving(PositionPidfConstants.USDrive, PositionPidfConstants.USStrafe, PositionPidfConstants.USTurn, robot);
             autoDriving.setDefaultMaxVelocity(0.3); //If things don't work start here
 
             telemetry.addData("Status", "Initialized");

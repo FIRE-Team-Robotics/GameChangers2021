@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.java.movement;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.java.util.Goal;
 import org.firstinspires.ftc.teamcode.java.util.GoalPosition;
-import org.firstinspires.ftc.teamcode.java.util.PidfController;
+import org.firstinspires.ftc.teamcode.java.util.PositionControl.PositionPidfController;
 import org.firstinspires.ftc.teamcode.java.util.RobotHardware;
 import org.firstinspires.ftc.teamcode.java.util.Side;
 
@@ -25,7 +27,7 @@ public class AutoAdjusting {
 
 	private final ActiveLocation    activeLocation;
 
-	private final PidfController PidfYaw, PidfPitch;
+	private final PositionPidfController PidfYaw, PidfPitch;
 
 	public double deltaX            = 0;
 	public double deltaY            = 0;
@@ -38,6 +40,15 @@ public class AutoAdjusting {
 	private GoalPosition activeGoal;
 	private int goalPositionIndex = 0;
 
+	Telemetry telemetry;
+	LinearOpMode opMode;
+
+	public AutoAdjusting(RobotHardware robot, ActiveLocation activeLocation, Side side, LinearOpMode opmode) {
+		this(robot, activeLocation, side);
+		this.telemetry = opmode.telemetry;
+		this.opMode = opmode;
+	}
+
 	public AutoAdjusting(RobotHardware robot, ActiveLocation activeLocation, Side side) {
 		this.potentiometer  = robot.potentiometer;
 		this.imu            = robot.imu;
@@ -45,8 +56,8 @@ public class AutoAdjusting {
 		this.activeLocation = activeLocation;
 
 		// TODO: Calibrate turn and Pitch Values
-		this.PidfYaw    = new PidfController(0.35, 0.00000, 0.395, 0);
-		this.PidfPitch  = new PidfController(0,0,0,0);
+		this.PidfYaw    = new PositionPidfController(0.35, 0.00000, 0.395, 0);
+		this.PidfPitch  = new PositionPidfController(1,0,0,1);
 
 		this.side = side;
 		activeGoal = GoalPosition.generate(side, initialGoal);
@@ -56,6 +67,10 @@ public class AutoAdjusting {
 		deltaX = activeGoal.xPosition - activeLocation.getFieldX();
 		deltaY = activeGoal.yPosition - activeLocation.getFieldY();
 		deltaZ = activeGoal.height    - getCurrentHeight();
+		telemetry.addData("Delta Z", deltaZ);
+		telemetry.addData("Current Height", getCurrentHeight());
+		telemetry.update();
+		opMode.sleep(1000);
 	}
 
 	public void cycleRight() {
@@ -76,6 +91,7 @@ public class AutoAdjusting {
 	 * adjusting the pitch angle (using PIDF)
 	 */
 	public void calculatePitchPower() {
+		update();
 		shooterRotationPower = PidfPitch.calculate(deltaZ);
 	}
 
@@ -94,6 +110,7 @@ public class AutoAdjusting {
 	 * Calculates the angle between the Robot and the Goal and returns the Necessary Adjustment
 	 */
 	public void calculateYawPower() {
+		update();
 		double currentAngle = activeLocation.getAngle();
 		double yaw          = Math.atan2(deltaX, deltaY);
 		double error        = currentAngle - yaw;
@@ -105,7 +122,6 @@ public class AutoAdjusting {
 	}
 
 	private double getCurrentHeight() {
-		update();
 		double distance = Math.sqrt(squared(deltaX) + squared(deltaY));
 		double theta = getShooterPitchAngle();
 		return  Math.tan(theta) * distance
