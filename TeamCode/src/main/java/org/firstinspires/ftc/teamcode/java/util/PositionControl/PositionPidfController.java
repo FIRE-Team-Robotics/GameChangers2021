@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.java.util;
+package org.firstinspires.ftc.teamcode.java.util.PositionControl;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.util.Range;
  * for example AutoDriving ,autoAdjusting , controlling the shooter speed
  */
 //P is main power, I looks at the sum of error and gives final push, D is how much the error is changing
-public class PidfController {
+public class PositionPidfController {
 	private double maxI = .1;
 	private double minI = -.1;
 
@@ -24,7 +24,7 @@ public class PidfController {
 	double integral = 0;
 	double derivative = 0;
 
-	public PidfController(double kp, double ki, double kd, double f) {
+	public PositionPidfController(double kp, double ki, double kd, double f) {
 		elapsedTime = new ElapsedTime();
 		this.previousTime = 0;
 		this.kp = kp;

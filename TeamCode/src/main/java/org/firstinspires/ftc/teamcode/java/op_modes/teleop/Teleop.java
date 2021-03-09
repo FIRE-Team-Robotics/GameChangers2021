@@ -75,7 +75,7 @@ public class Teleop extends LinearOpMode {
        // intakeAndDelivery = robot.intakeAndDelivery;
         //rightShooter = robot.rightShooter;
         //leftShooter = robot.leftShooter;
-        lowerWobble =robot.lowerWobble;
+        //lowerWobble =robot.lowerWobble;
         //wobbleDetector =robot.wobbleDetector;
         //ringCounter =robot.ringCounter;
 

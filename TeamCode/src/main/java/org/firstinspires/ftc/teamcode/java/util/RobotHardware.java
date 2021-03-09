@@ -4,8 +4,10 @@ package org.firstinspires.ftc.teamcode.java.util;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.hardware.AnalogInput;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
@@ -27,7 +29,8 @@ public class RobotHardware {
     public DcMotor leftShooter = null;
     public DcMotor intakeAndDelivery = null;
 
-    public Servo lowerWobble = null;
+    public CRServo rShooter;
+    public CRServo lShooter;
 
     public AnalogInput potentiometer = null;
     public TouchSensor wobbleDetector = null;
@@ -57,11 +60,12 @@ public class RobotHardware {
         imu.initialize(parameters);
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
-        //potentiometer = hardwareMap.get(AnalogInput.class, "potentiometer");
+        potentiometer = hardwareMap.get(AnalogInput.class, "potentiometer");
         //wobbleDetector = hardwareMap.get(TouchSensor.class, "wobbleDetector");
         //ringCounter = hardwareMap.get(TouchSensor.class, "ringCounter");
 
-        lowerWobble = hardwareMap.get(Servo.class,"wobbleGrip" );
+        lShooter = hardwareMap.get(CRServo.class,"l1" );
+        rShooter = hardwareMap.get(CRServo.class,"r1" );
         frontLeftMotor = hardwareMap.get(DcMotorEx.class, "frontLeftMotor");
         frontRightMotor = hardwareMap.get(DcMotorEx.class, "frontRightMotor");
         backLeftMotor = hardwareMap.get(DcMotorEx.class, "backLeftMotor");
@@ -75,6 +79,8 @@ public class RobotHardware {
         frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
         backRightMotor.setDirection(DcMotor.Direction.FORWARD);
         backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
+        lShooter.setDirection(DcMotorSimple.Direction.REVERSE);
+        rShooter.setDirection(DcMotorSimple.Direction.FORWARD);
 
         //intakeAndDelivery.setDirection(DcMotor.Direction.FORWARD);
 //        rightShooter.setDirection(DcMotor.Direction.FORWARD);
@@ -97,7 +103,7 @@ public class RobotHardware {
 
 //        rightShooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 //        leftShooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-          //intakeAndDelivery.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        //intakeAndDelivery.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
         // Turn off all motors
         frontRightMotor.setPower(0);
